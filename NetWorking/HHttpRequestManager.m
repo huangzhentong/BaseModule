@@ -221,13 +221,15 @@ headers:(nullable NSDictionary <NSString *, NSString *> *)headers
      failure:(nullable AFNErrorBlock)failure{
     
     AFHTTPSessionManager *manager = [self manager];
-    NSURLSessionDataTask *dataTask =  [manager PATCH:urlString parameters:parameters headers:headers success:^(NSURLSessionDataTask *  task, id   responseObject) {
+    NSURLSessionDataTask *dataTask = [manager PATCH:urlString parameters:parameters headers:headers success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         success(responseObject,YES);
         [[self dataTaskManager] removeObjectForKey:urlString];
-    } failure:^(NSURLSessionDataTask *  task, NSError *  error) {
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         failure(error);
         [[self dataTaskManager] removeObjectForKey:urlString];
     }];
+    
+    
     [[self dataTaskManager] setValue:dataTask forKey:urlString];
     return dataTask;
     

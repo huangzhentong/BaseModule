@@ -401,7 +401,7 @@
 				TargetAttributes = {
 					630BDA491DCB3F76005FDF18 = {
 						CreatedOnToolsVersion = 8.1;
-						DevelopmentTeam = 53DA7ZAKF8;
+						DevelopmentTeam = Q8KL8EGS6X;
 						ProvisioningStyle = Automatic;
 					};
 					630BDA621DCB3F76005FDF18 = {
@@ -421,6 +421,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -679,7 +680,7 @@
 			baseConfigurationReference = 17C6B9CFB8C251250445F7C3 /* Pods-BasisModule.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 53DA7ZAKF8;
+				DEVELOPMENT_TEAM = Q8KL8EGS6X;
 				INFOPLIST_FILE = BasisModule/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = d.BasisModule;
@@ -692,7 +693,7 @@
 			baseConfigurationReference = 28BCCF98ABC1F4CD35A982EF /* Pods-BasisModule.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 53DA7ZAKF8;
+				DEVELOPMENT_TEAM = Q8KL8EGS6X;
 				INFOPLIST_FILE = BasisModule/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = d.BasisModule;
