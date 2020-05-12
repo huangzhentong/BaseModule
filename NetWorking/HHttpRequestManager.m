@@ -136,12 +136,12 @@ static NSString *httpHeaderField = nil;
     AFHTTPSessionManager *manager = [self manager];
     
     
-   NSURLSessionDataTask *dataTask = [manager GET:urlString parameters:parameters headers:headers progress:downloadProgress success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+   NSURLSessionDataTask *dataTask = [manager GET:urlString parameters:parameters headers:headers progress:downloadProgress success:^(NSURLSessionDataTask *  task, id   responseObject) {
        
        success(responseObject,YES);
        [[self dataTaskManager] removeObjectForKey:urlString];
        
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask *  task, NSError *  error) {
         
         failure(error);
         
@@ -174,13 +174,13 @@ headers:(nullable NSDictionary <NSString *, NSString *> *)headers
 {
     AFHTTPSessionManager *manager = [self manager];
 
-   NSURLSessionDataTask *dataTask = [manager POST:urlString parameters:parameters headers:headers progress:uploadProgress success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+   NSURLSessionDataTask *dataTask = [manager POST:urlString parameters:parameters headers:headers progress:uploadProgress success:^(NSURLSessionDataTask *  task, id   responseObject) {
         
     
        success(responseObject,YES);
         [[self dataTaskManager] removeObjectForKey:urlString];
         
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask *  task, NSError *  error) {
     
         failure(error);
         [[self dataTaskManager] removeObjectForKey:urlString];
@@ -203,10 +203,10 @@ headers:(nullable NSDictionary <NSString *, NSString *> *)headers
    failure:(nullable AFNErrorBlock)failure
 {
      AFHTTPSessionManager *manager = [self manager];
-    NSURLSessionDataTask *dataTask =  [manager PUT:urlString parameters:parameters headers:headers success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    NSURLSessionDataTask *dataTask =  [manager PUT:urlString parameters:parameters headers:headers success:^(NSURLSessionDataTask *  task, id   responseObject) {
         success(responseObject,YES);
         [[self dataTaskManager] removeObjectForKey:urlString];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask *  task, NSError *  error) {
         failure(error);
         [[self dataTaskManager] removeObjectForKey:urlString];
     }];
@@ -221,10 +221,10 @@ headers:(nullable NSDictionary <NSString *, NSString *> *)headers
      failure:(nullable AFNErrorBlock)failure{
     
     AFHTTPSessionManager *manager = [self manager];
-    NSURLSessionDataTask *dataTask =  [manager PATCH:urlString parameters:parameters headers:headers success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    NSURLSessionDataTask *dataTask =  [manager PATCH:urlString parameters:parameters headers:headers success:^(NSURLSessionDataTask *  task, id   responseObject) {
         success(responseObject,YES);
         [[self dataTaskManager] removeObjectForKey:urlString];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask *  task, NSError *  error) {
         failure(error);
         [[self dataTaskManager] removeObjectForKey:urlString];
     }];
@@ -240,10 +240,10 @@ headers:(nullable NSDictionary <NSString *, NSString *> *)headers
       failure:(nullable AFNErrorBlock)failure
 {
     AFHTTPSessionManager *manager = [self manager];
-    NSURLSessionDataTask *dataTask =  [manager DELETE:urlString parameters:parameters headers:headers success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    NSURLSessionDataTask *dataTask =  [manager DELETE:urlString parameters:parameters headers:headers success:^(NSURLSessionDataTask *  task, id   responseObject) {
         success(responseObject,YES);
         [[self dataTaskManager] removeObjectForKey:urlString];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask *  task, NSError *  error) {
         failure(error);
         [[self dataTaskManager] removeObjectForKey:urlString];
     }];
@@ -426,12 +426,12 @@ headers:(nullable NSDictionary <NSString *, NSString *> *)headers
       
     } progress:^(NSProgress * _Nonnull uploadProgress) {
          NSLog(@"%f",1.0 * uploadProgress.completedUnitCount / uploadProgress.totalUnitCount);
-    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    } success:^(NSURLSessionDataTask *  task, id   responseObject) {
         if (success) {
             success(responseObject,YES);
         }
         
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    } failure:^(NSURLSessionDataTask *  task, NSError *  error) {
         if (failure) {
             failure(error);
         }
