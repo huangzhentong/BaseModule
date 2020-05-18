@@ -27,13 +27,13 @@ static NSString * const ClientUrl = @"url";
 static NSString * const ClientType = @"type";
 static NSString * const ClientProgress = @"progress";
 static NSString * const ClientParameters = @"parameters";
-static NSString * const ClientIsCache = @"isCache";
-static NSString * const ClientHeaders = @"headers";
 
+static NSString * const ClientHeaders = @"headers";
+static NSString * const ClientRequestSerializer = @"requestSerializer";
 
 #pragma mark - DownLoadClient
 static NSString * const SavePath = @"savePath";
-static NSString * const DownloadProgress = @"DownloadProgress";
+//static NSString * const DownloadProgress = @"DownloadProgress";
 
 
 

@@ -17,7 +17,7 @@ typedef NS_ENUM(NSInteger,HHttpRequestSerializer){
 
 @protocol HHttpRequestConfigDelegate <NSObject>
 @property(nonatomic,strong)NSMutableDictionary * headerFile;
-@property(nonatomic)HHttpRequestSerializer type;
+//@property(nonatomic)HHttpRequestSerializer type;
 @end
 
 @interface HHttpRequestConfigManager : NSObject

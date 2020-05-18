@@ -60,9 +60,7 @@ static NSString *httpHeaderField = nil;
        
         // 声明上传的是json格式的参数，需要你和后台约定好，不然会出现后台无法获取到你上传的参数问题
         
-            manager.requestSerializer = [AFJSONRequestSerializer serializerWithWritingOptions:NSJSONWritingPrettyPrinted]; // 上传JSON格式
-        
-
+        manager.requestSerializer = [HHttpRequestManager jsonRequestSerializer]; // 上传JSON格式
         manager.responseSerializer = [AFJSONResponseSerializer serializer]; // AFN会JSON解析返回的数据
         // 个人建议还是自己解析的比较好，有时接口返回的数据不合格会报3840错误，大致是AFN无法解析返回来的数据
             manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/html", nil];;
@@ -71,58 +69,69 @@ static NSString *httpHeaderField = nil;
     
 
     });
+    
     id<HHttpRequestConfigDelegate> delegate = [HHttpRequestConfigManager delegate];
-    if (delegate) {
-       
-        switch (delegate.type) {
-            case HHttpRequestSerializerNoromal:
-            {
-               if( [manager.requestSerializer isKindOfClass:[AFJSONRequestSerializer class]])
-               {
-                   manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-                   [manager.requestSerializer willChangeValueForKey:@"timeoutInterval"];
-                          manager.requestSerializer.timeoutInterval = kTimeOutInterval;
-                          [manager.requestSerializer didChangeValueForKey:@"timeoutInterval"];
-               }
-            }
-                
-                break;
-            case HHttpRequestSerializerJSON:
-            {
-                if( [manager.requestSerializer isKindOfClass:[AFHTTPRequestSerializer class]])
-                {
-                    manager.requestSerializer = [AFJSONRequestSerializer serializerWithWritingOptions:NSJSONWritingPrettyPrinted];
-                    [manager.requestSerializer willChangeValueForKey:@"timeoutInterval"];
-                           manager.requestSerializer.timeoutInterval = kTimeOutInterval;
-                           [manager.requestSerializer didChangeValueForKey:@"timeoutInterval"];
-                }
-            }
-                break;
-                
-            default:
-                break;
-        }
-//        NSDictionary *dic = delegate.headerFile;
-//        if (dic != nil) {
-//            for (NSString *key in dic) {
-//                [manager.requestSerializer setValue:dic[key] forHTTPHeaderField:key];
+//    if (delegate) {
+//       
+//        switch (delegate.type) {
+//            case HHttpRequestSerializerNoromal:
+//            {
+//               if( [manager.requestSerializer isKindOfClass:[AFJSONRequestSerializer class]])
+//               {
+//                   manager.requestSerializer = [AFHTTPRequestSerializer serializer];
+//                   [manager.requestSerializer willChangeValueForKey:@"timeoutInterval"];
+//                          manager.requestSerializer.timeoutInterval = kTimeOutInterval;
+//                          [manager.requestSerializer didChangeValueForKey:@"timeoutInterval"];
+//               }
 //            }
+//                
+//                break;
+//            case HHttpRequestSerializerJSON:
+//            {
+//                if( [manager.requestSerializer isKindOfClass:[AFHTTPRequestSerializer class]])
+//                {
+//                    manager.requestSerializer = [AFJSONRequestSerializer serializerWithWritingOptions:NSJSONWritingPrettyPrinted];
+//                    [manager.requestSerializer willChangeValueForKey:@"timeoutInterval"];
+//                           manager.requestSerializer.timeoutInterval = kTimeOutInterval;
+//                           [manager.requestSerializer didChangeValueForKey:@"timeoutInterval"];
+//                }
+//            }
+//                break;
+//                
+//            default:
+//                break;
 //        }
-    }
+//
+//    }
     
     
     
     return manager;
 }
 
++(AFHTTPRequestSerializer*)httpRequestSerializer{
+    static AFHTTPRequestSerializer * serializer = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+         serializer = [AFHTTPRequestSerializer serializer];
+        [serializer willChangeValueForKey:@"timeoutInterval"];
+        serializer.timeoutInterval = kTimeOutInterval;
+        [serializer didChangeValueForKey:@"timeoutInterval"];
+    });
+    return serializer;
+}
 
-+(void)addHeader:(nullable NSString*)header withHttpHeader:(nullable NSString *)headerKey
++(AFJSONRequestSerializer*)jsonRequestSerializer
 {
-    AFHTTPSessionManager *manager = [self manager];
-    if (header != nil && headerKey != nil) {
-        [manager.requestSerializer setValue:header forHTTPHeaderField:headerKey];
-       
-    }
+    static AFJSONRequestSerializer * serializer = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        serializer = [AFJSONRequestSerializer serializer];
+        [serializer willChangeValueForKey:@"timeoutInterval"];
+        serializer.timeoutInterval = kTimeOutInterval;
+        [serializer didChangeValueForKey:@"timeoutInterval"];
+    });
+    return serializer;
 }
 
 
@@ -136,7 +145,7 @@ static NSString *httpHeaderField = nil;
     AFHTTPSessionManager *manager = [self manager];
     
     
-   NSURLSessionDataTask *dataTask = [manager GET:urlString parameters:parameters headers:headers progress:downloadProgress success:^(NSURLSessionDataTask *  task, id   responseObject) {
+    NSURLSessionDataTask *dataTask = [manager GET:urlString parameters:parameters headers:headers progress:downloadProgress success:^(NSURLSessionDataTask *  task, id   responseObject) {
        
        success(responseObject,YES);
        [[self dataTaskManager] removeObjectForKey:urlString];

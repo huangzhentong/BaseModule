@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
 
   
   s.name         = "BasisModule"
-  s.version      = "1.2.0.1"
+  s.version      = "1.2.1"
   s.summary      = "一个简易的网络模块."
 
   # This description is used to generate tags and improve search results.

@@ -22,9 +22,16 @@
 
 static NSString *baseURL=nil;
 
+static HHttpRequestSerializer generalSerializer = HHttpRequestSerializerJSON;
+
 +(void)setBaseURL:(NSString*)url
 {
     baseURL = [url copy];
+}
+//设置通用serializer
++(void)setGeneralSerializer:(HHttpRequestSerializer)serializer
+{
+    generalSerializer = serializer;
 }
 
 -(instancetype)init
@@ -35,6 +42,7 @@ static NSString *baseURL=nil;
         self.baseUrl = baseURL?:BASE_URL;
         self.requestType=HttpRequestUrlType_Post;
         self.generalLogic = true;
+        self.serializer = generalSerializer;
     }
     return self;
 }
@@ -94,8 +102,8 @@ static NSString *baseURL=nil;
                 break;
         }
     }
+    dic[ClientRequestSerializer] = @(self.serializer);
     dic[ClientType] = self.type?:@"post";
-    dic[ClientIsCache] = @(self.isCache);
     if (self.progress) {
         dic[ClientProgress] = self.progress;
     }
@@ -167,11 +175,7 @@ static NSString *baseURL=nil;
             [delegate requestWillStart];
         }
     }
-    
-    
-    
-    
-    
+  
 }
 -(void)requestComplete:(id)reslut withError:(NSError *)error;
 {
@@ -186,8 +190,6 @@ static NSString *baseURL=nil;
             [delegate requestComplete:reslut withError:error];
         }
     }
-    
-    
 }
 
 -(NSURLSessionDataTask*)dataTask

@@ -37,6 +37,11 @@ typedef NS_ENUM(NSInteger, HttpRequestUrlType)
     HttpRequestUrlType_Delete,
     HttpRequestUrlType_Patch,
 };
+typedef NS_ENUM(NSInteger,HHttpRequestSerializer){
+    HHttpRequestSerializerNoromal,
+    HHttpRequestSerializerJSON,
+    
+};
 
 
 @interface BaseClient : NSObject
@@ -44,17 +49,23 @@ typedef NS_ENUM(NSInteger, HttpRequestUrlType)
 @property(nonatomic,copy)NSString *url;
 @property(nonatomic,copy)id parameters;                         //参数
 @property(nonatomic,copy)NSString *type;                        //默认post 总的为6类，post,get ,put,delete,patch,cancel
-@property(nonatomic)HttpRequestUrlType requestType;             //请求类型，默认HttpRequestUrlType_Post
-@property(nonatomic)BOOL isCache;                               //是否缓存
+@property(nonatomic)HttpRequestUrlType requestType;          //请求类型，默认HttpRequestUrlType_Post
+//@property(nonatomic)BOOL isCache;                               //是否缓存
 @property(nonatomic,copy)void(^progress)(NSProgress *progress); //进度
 @property(nonatomic,copy)ReqeustWillStart startBlock;           //开始请求
 @property(nonatomic,copy)ReqeustComplete completeBlock;           //开始请求
+
 @property(nonatomic,weak)id<RequestModelDelegate> delegate;
 @property(nonatomic)Class modelClass;                             //需要转换的模型
+
 @property(nonatomic,copy)NSDictionary *headers;                   //请求头
 @property(nonatomic,strong,readonly)NSURLSessionDataTask* dataTask;
-@property(nonatomic,getter=isGeneralLogic)BOOL generalLogic;                             //是否使用通用逻辑 默认为true
+@property(nonatomic,getter=isGeneralLogic)BOOL generalLogic;    //是否使用通用逻辑 默认为true
+
+@property(nonatomic)HHttpRequestSerializer serializer;          //默认为JSON
+
 -(NSDictionary*)dictionaryWithModel;
+
 -(NSString*)requestURL;
 //清求事件
 -(void)request:(void(^)(id result))completion;
@@ -71,9 +82,6 @@ typedef NS_ENUM(NSInteger, HttpRequestUrlType)
  */
 +(BOOL)isRequestingWithURL:(NSString*)url;
 
-
-
-
 ////请求完成后处理 （因不同后台对code定议不同）
 ////可用cagetory 来重写 自己处理里面的逻辑
 //-(id )requestEndLogic:(id)dict;
@@ -85,6 +93,9 @@ typedef NS_ENUM(NSInteger, HttpRequestUrlType)
  */
 +(void)setBaseURL:(NSString*)url;
 //取消请求
+
+//设置通用serializer
++(void)setGeneralSerializer:(HHttpRequestSerializer)serializer;
 
 +(void)cancelRequestURL:(NSString *)url;
 

@@ -79,6 +79,7 @@
                              @"password":@"123"
                                };
     client.generalLogic = false;
+    client.serializer = HHttpRequestSerializerJSON;
     client.headers = @{@"header1":@"huang"};
     return [client request:^(id result) {
         NSLog(@"result = %@",result);
@@ -225,7 +226,7 @@
     BaseClient* model = [BaseClient new];
     model.url =@"user/getmarquee";
     model.type=@"get";
-    model.isCache=NO;
+    
     [model request:^(id result) {
         NSLog(@"跑马灯 =%@",result);
         

@@ -13,52 +13,19 @@
 #import "HHttpRequestConfigManager.h"
 
 @implementation BaseRouterManager
-+(void)load
-{
-    
-    [self addNetWorkingListen];
-    [self reachabilityStatusChange:nil];
-    [self getReachabilityStatus];
-    [self addNetworkingRequestListen];
-    
-}
 
-//判断一个URL是否在请求中
-+(void)addNetworkingRequestListen
-{
-//    [MGJRouter registerURLPattern:HRequestUrlIsRequest toObjectHandler:^id(NSDictionary *routerParameters) {
-//        NSDictionary *userInfo =routerParameters[MGJRouterParameterUserInfo];
-//        NSString *url = userInfo[ClientUrl]?:@"";
-//        BOOL isRequest = [HHttpRequestManager urlIsRequest:url];
-//        return @(isRequest);
-//    }];
-}
+
+
 
 +(BOOL)isRequestingWithURL:(NSString*)url
 {
     BOOL isRequest = [HHttpRequestManager urlIsRequest:url];
     return isRequest;
 }
-    
 
-+(void)addRequestHeader:(NSString*)header withRequestHeaderKey:(NSString*)headerKey
-{
-    [HHttpRequestManager addHeader:header withHttpHeader:headerKey];
-}
 
-+(void)addNetWorkingListen
-{
-    
-    // 错误码管理
-//    [MGJRouter registerURLPattern:BaseGeneralRequest toHandler:^(NSDictionary *routerParameters) {
-//        NSLog(@"routerParameters=%@",routerParameters);
-//        NSDictionary *userInfo =routerParameters[MGJRouterParameterUserInfo];
-//        void (^completion)(id result) = routerParameters[MGJRouterParameterCompletion];
-//        [self requestWithDic:userInfo withBlock:completion];
-//        
-//    }];
-    
-}
+
+
 
 +(NSURLSessionDataTask*)requestWithDic:(NSDictionary *)userInfo withBlock:(void(^)(id result))block
 {
@@ -66,22 +33,23 @@
     //空格及中文处理
     NSString *url = userInfo[ClientUrl];
     
-    NSDictionary *dic = userInfo[ClientParameters];
+    NSDictionary *parameters = userInfo[ClientParameters];
     NSString *type =  [userInfo[ClientType] lowercaseString];
     //是否缓存
-    BOOL isCache = [userInfo[ClientIsCache] boolValue];
+    BOOL isCache = false;
     void (^completion)(id result) = block;
     NSString * cacheUrl=nil;
     void (^uploadProgress)(NSProgress *downloadProgress)= userInfo[ClientProgress];
-     id<HHttpRequestConfigDelegate> delegate = [HHttpRequestConfigManager delegate];
+    
+    id<HHttpRequestConfigDelegate> delegate = [HHttpRequestConfigManager delegate];
     NSMutableDictionary *headers = [NSMutableDictionary dictionary];
     if (delegate) {
         [headers addEntriesFromDictionary:delegate.headerFile];
     }
-     if(userInfo[ClientHeaders])
-     {
-         [headers addEntriesFromDictionary:userInfo[ClientHeaders]];
-     }
+    if(userInfo[ClientHeaders])
+    {
+        [headers addEntriesFromDictionary:userInfo[ClientHeaders]];
+    }
     if([HHttpRequestManager networkReachabilityStatus]==0)
     {
         NSLog(@"无网络请");
@@ -89,10 +57,30 @@
         [self failureEvent:error withCompletion:completion];
         return nil;
     }
+    NSNumber * serializer = userInfo[ClientRequestSerializer];
+    switch ([serializer intValue]) {
+        case HHttpRequestSerializerJSON:
+        {
+            if([HHttpRequestManager manager].requestSerializer != [HHttpRequestManager jsonRequestSerializer])
+            {
+                [HHttpRequestManager manager].requestSerializer = [HHttpRequestManager jsonRequestSerializer];
+            }
+        }
+            break;
+        default:{
+            if([HHttpRequestManager manager].requestSerializer != [HHttpRequestManager httpRequestSerializer])
+            {
+                [HHttpRequestManager manager].requestSerializer = [HHttpRequestManager httpRequestSerializer];
+            }
+            
+        }
+            break;
+    }
+    
     
     if ([type isEqualToString:@"post"]) {
         
-       return [HHttpRequestManager POST:url parameters:dic headers:headers progress:uploadProgress success:^(NSDictionary * _Nonnull dict, BOOL success) {
+        return [HHttpRequestManager POST:url parameters:parameters headers:headers progress:uploadProgress success:^(NSDictionary * _Nonnull dict, BOOL success) {
             [self successEvent:dict isCache:isCache withCacheKey:cacheUrl withCompletion:completion];
         } failure:^(NSError * _Nonnull error) {
             [self failureEvent:error withCompletion:completion];
@@ -101,7 +89,7 @@
     }
     else if([type isEqualToString:@"get"])
     {
-       return [HHttpRequestManager GET:url parameters:dic headers:headers success:^(NSDictionary * _Nonnull dict, BOOL success) {
+        return [HHttpRequestManager GET:url parameters:parameters headers:headers success:^(NSDictionary * _Nonnull dict, BOOL success) {
             [self successEvent:dict isCache:isCache withCacheKey:cacheUrl withCompletion:completion];
             
         } failure:^(NSError * _Nonnull error) {
@@ -115,7 +103,7 @@
     }
     else if([type isEqualToString:@"put"])
     {
-       return [HHttpRequestManager PUT:url parameters:dic headers:headers success:^(NSDictionary * _Nonnull dict, BOOL success) {
+        return [HHttpRequestManager PUT:url parameters:parameters headers:headers success:^(NSDictionary * _Nonnull dict, BOOL success) {
             [self successEvent:dict   withCompletion:completion];
             
         } failure:^(NSError * _Nonnull error) {
@@ -125,7 +113,7 @@
     }
     else if([type isEqualToString:@"patch"])
     {
-       return [HHttpRequestManager PATCH:url parameters:dic headers:headers success:^(NSDictionary * _Nonnull dict, BOOL success) {
+        return [HHttpRequestManager PATCH:url parameters:parameters headers:headers success:^(NSDictionary * _Nonnull dict, BOOL success) {
             [self successEvent:dict  withCompletion:completion];
             
         } failure:^(NSError * _Nonnull error) {
@@ -136,7 +124,7 @@
     }
     else if([type isEqualToString:@"delete"])
     {
-       return [HHttpRequestManager DELETE:url parameters:dic headers:headers success:^(NSDictionary * _Nonnull dict, BOOL success) {
+        return [HHttpRequestManager DELETE:url parameters:parameters headers:headers success:^(NSDictionary * _Nonnull dict, BOOL success) {
             [self successEvent:dict  withCompletion:completion];
             
         } failure:^(NSError * _Nonnull error) {
@@ -146,8 +134,6 @@
     }
     else if([type isEqualToString:@"download"])
     {
-        
-        
         [HHttpRequestManager downloadWithUrlSring:url savePath:userInfo[SavePath] progress:uploadProgress completionHandler:^(NSString *filePath, NSError *error) {
             
             if (error==nil) {
@@ -171,13 +157,13 @@
         if (![files isKindOfClass:[NSArray class]]) {
             files = @[files];
         }
-        return [HHttpRequestManager uploadImageWithUrlString:url parameters:dic files:files name:name fileName:fileName mimeType:mimeType progress:uploadProgress success:^(NSDictionary * _Nonnull dict, BOOL success) {
+        return [HHttpRequestManager uploadImageWithUrlString:url parameters:parameters files:files name:name fileName:fileName mimeType:mimeType progress:uploadProgress success:^(NSDictionary * _Nonnull dict, BOOL success) {
             [self successEvent:dict  withCompletion:completion];
         } failure:^(NSError * _Nonnull error) {
             [self failureEvent:error withCompletion:completion];
         }];
         
-
+        
     }
     return nil;
 }
@@ -251,16 +237,13 @@
         if (block) {
             block(status);
         }
-//        [MGJRouter openURL:HReachabilityStatusChange withUserInfo:@{@"status":@(status)} completion:nil];
+        
     }];
 }
 //获取网络状态
 +(long)getReachabilityStatus
 {
-//    [MGJRouter registerURLPattern:HGetReachabilityStatus toObjectHandler:^id(NSDictionary *routerParameters) {
-//
-//        return @([HHttpRequestManager networkReachabilityStatus]);
-//    }];
+    
     return  [HHttpRequestManager networkReachabilityStatus];
     
 }
