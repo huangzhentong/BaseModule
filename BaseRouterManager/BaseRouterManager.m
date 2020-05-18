@@ -7,15 +7,11 @@
 //
 
 #import "HHttpRequestManager.h"
-
 #import "BaseRouterManager.h"
 #import "RouterDefine.h"
 #import "HHttpRequestConfigManager.h"
 
 @implementation BaseRouterManager
-
-
-
 
 +(BOOL)isRequestingWithURL:(NSString*)url
 {

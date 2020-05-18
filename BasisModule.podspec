@@ -130,7 +130,7 @@ s.subspec 'BaseRouterManager' do |ss|
     	ss.dependency 'BasisModule/Networking'
    	ss.dependency 'BasisModule/Manager'
    	#ss.dependency 'MGJRouter'
-	
+	ss.dependency 'AFNetworking'
    	ss.public_header_files = 'BaseRouterManager/*.h'
         ss.source_files = 'BaseRouterManager/*.{h,m}'
 end
