@@ -7,7 +7,7 @@
 //
 
 #import "HHttpRequestManager.h"
-#import "AFHTTPSessionManager.h"
+//#import "AFHTTPSessionManager.h"
 #import "HHttpRequestConfigManager.h"
 
 static NSMutableDictionary *dataTaskManager;

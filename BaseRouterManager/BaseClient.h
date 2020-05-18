@@ -29,19 +29,7 @@ typedef void(^ReqeustWillStart)();
 typedef void(^ReqeustComplete)(id request,NSError *error);
 typedef void(^RequestProgressBlock)(NSProgress *progress);
 @protocol RequestModelDelegate;
-typedef NS_ENUM(NSInteger, HttpRequestUrlType)
-{
-    HttpRequestUrlType_Post,
-    HttpRequestUrlType_Get,
-    HttpRequestUrlType_Put,
-    HttpRequestUrlType_Delete,
-    HttpRequestUrlType_Patch,
-};
-typedef NS_ENUM(NSInteger,HHttpRequestSerializer){
-    HHttpRequestSerializerNoromal,
-    HHttpRequestSerializerJSON,
-    
-};
+
 
 
 @interface BaseClient : NSObject
