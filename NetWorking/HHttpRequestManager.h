@@ -11,9 +11,7 @@
 //#define kBaseURL @"http://192.168.1.20:8000"
 
 #import <UIKit/UIKit.h>
-//#import <AFNetworking.h>
-#import "AFHTTPSessionManager.h"
-
+#import <AFNetworking/AFNetworking.h>
 typedef void (^AFNSuccessBlock)(NSDictionary * _Nonnull dict, BOOL success); // 访问成功block
 typedef void (^AFNErrorBlock)(NSError * _Nonnull error); // 访问失败block
 
