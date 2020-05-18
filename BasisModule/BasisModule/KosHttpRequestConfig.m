@@ -33,10 +33,7 @@ NSMutableDictionary *dic = [NSMutableDictionary dictionary];
 
     return dic;
 }
--(HHttpRequestSerializer)type
-{
-    return HHttpRequestSerializerJSON;
-}
+
 +(void)load
 {
     [HHttpRequestConfigManager addDelegate:[KosHttpRequestConfig new]];

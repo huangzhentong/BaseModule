@@ -23,10 +23,6 @@
     return isRequest;
 }
 
-
-
-
-
 +(NSURLSessionDataTask*)requestWithDic:(NSDictionary *)userInfo withBlock:(void(^)(id result))block
 {
     

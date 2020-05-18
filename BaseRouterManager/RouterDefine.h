@@ -19,7 +19,19 @@
 
 
 
-
+typedef NS_ENUM(NSInteger, HttpRequestUrlType)
+{
+    HttpRequestUrlType_Post,
+    HttpRequestUrlType_Get,
+    HttpRequestUrlType_Put,
+    HttpRequestUrlType_Delete,
+    HttpRequestUrlType_Patch,
+};
+typedef NS_ENUM(NSInteger,HHttpRequestSerializer){
+    HHttpRequestSerializerNoromal,
+    HHttpRequestSerializerJSON,
+    
+};
 
 
 #pragma mark - BaseClient

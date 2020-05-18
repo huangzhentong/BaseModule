@@ -8,11 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSInteger,HHttpRequestSerializer){
-    HHttpRequestSerializerNoromal,
-    HHttpRequestSerializerJSON,
-    
-};
 
 
 @protocol HHttpRequestConfigDelegate <NSObject>
