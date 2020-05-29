@@ -65,46 +65,10 @@ static NSString *httpHeaderField = nil;
         // 个人建议还是自己解析的比较好，有时接口返回的数据不合格会报3840错误，大致是AFN无法解析返回来的数据
             manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript",@"text/html", nil];;
         [manager.requestSerializer setValue:@"text/html" forHTTPHeaderField:@"Content-Type"];
-//        manager.requestSerializer = [AFHTTPRequestSerializer serializer]; // 上传普通格式
+
     
 
     });
-    
-    id<HHttpRequestConfigDelegate> delegate = [HHttpRequestConfigManager delegate];
-//    if (delegate) {
-//       
-//        switch (delegate.type) {
-//            case HHttpRequestSerializerNoromal:
-//            {
-//               if( [manager.requestSerializer isKindOfClass:[AFJSONRequestSerializer class]])
-//               {
-//                   manager.requestSerializer = [AFHTTPRequestSerializer serializer];
-//                   [manager.requestSerializer willChangeValueForKey:@"timeoutInterval"];
-//                          manager.requestSerializer.timeoutInterval = kTimeOutInterval;
-//                          [manager.requestSerializer didChangeValueForKey:@"timeoutInterval"];
-//               }
-//            }
-//                
-//                break;
-//            case HHttpRequestSerializerJSON:
-//            {
-//                if( [manager.requestSerializer isKindOfClass:[AFHTTPRequestSerializer class]])
-//                {
-//                    manager.requestSerializer = [AFJSONRequestSerializer serializerWithWritingOptions:NSJSONWritingPrettyPrinted];
-//                    [manager.requestSerializer willChangeValueForKey:@"timeoutInterval"];
-//                           manager.requestSerializer.timeoutInterval = kTimeOutInterval;
-//                           [manager.requestSerializer didChangeValueForKey:@"timeoutInterval"];
-//                }
-//            }
-//                break;
-//                
-//            default:
-//                break;
-//        }
-//
-//    }
-    
-    
     
     return manager;
 }
@@ -263,27 +227,41 @@ headers:(nullable NSDictionary <NSString *, NSString *> *)headers
 }
 
 
-+(void)downloadWithUrlSring:(nullable NSString *)urlString
-                   savePath:(nullable NSString *)savePath
-                   progress:(nullable void (^)(NSProgress * _Nonnull downloadProgress))downloadProgressB
-          completionHandler:(nullable void (^)(NSString *filePath , NSError *error))completion
++(NSURLSessionDownloadTask*)downloadWithUrlSring:(nullable NSString *)urlString
+                         withData:(NSData*)tmpData
+         savePath:(nullable NSString *)savePath
+         progress:(nullable void (^)(NSProgress * _Nonnull downloadProgress))downloadProgress
+                               completionHandler:(nullable void (^)(NSString * _Nonnull filePath , NSError * _Nonnull error))completion
 {
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFURLSessionManager *manager = [[AFURLSessionManager alloc] initWithSessionConfiguration:configuration];
     
     NSURL *URL = [NSURL URLWithString:urlString];
-    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
-    
-   
-    
-    NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:^(NSProgress * _Nonnull downloadProgress) {
-    
-        if (downloadProgressB) {
-           downloadProgressB(downloadProgress);
-        }
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:URL];
+
+    NSURLSessionDownloadTask *downloadTask = nil;
+    if(tmpData != nil)
+    {
+        //断点续传
+       downloadTask = [manager downloadTaskWithResumeData:tmpData progress:downloadProgress destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
+            NSURL *documentsDirectoryURL;
+             if (savePath==nil||savePath.length<2) {
+                 documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+             }
+             else
+             {
+                 documentsDirectoryURL = [NSURL fileURLWithPath:savePath];
+             }
+            
+             return [documentsDirectoryURL URLByAppendingPathComponent:[response suggestedFilename]];
+        } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
+             completion([filePath relativeString],error);
+        }];
+    }
+    else
+    {
         
-        
-    } destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
+        downloadTask = [manager downloadTaskWithRequest:request progress:downloadProgress destination:^NSURL *(NSURL *targetPath, NSURLResponse *response) {
         NSURL *documentsDirectoryURL;
         if (savePath==nil||savePath.length<2) {
             documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
@@ -294,11 +272,14 @@ headers:(nullable NSDictionary <NSString *, NSString *> *)headers
         }
        
         return [documentsDirectoryURL URLByAppendingPathComponent:[response suggestedFilename]];
-    } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
+        } completionHandler:^(NSURLResponse *response, NSURL *filePath, NSError *error) {
         completion([filePath relativeString],error);
         NSLog(@"File downloaded to: %@", filePath);
-    }];
+        }];
+    }
+
     [downloadTask resume];
+    return  downloadTask;
 }
 
 +(void)cancelRequest:(NSString *)urlString

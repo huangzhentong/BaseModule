@@ -13,7 +13,7 @@
 
 +(long)getReachabilityStatus;
 
-+(NSURLSessionDataTask*)requestWithDic:(NSDictionary *)userInfo withBlock:(void(^)(id result))block;
++(id)requestWithDic:(NSDictionary *)userInfo withBlock:(void(^)(id result))block;
 
 //判断一个URL是否在请求中
 +(BOOL)isRequestingWithURL:(NSString*)url;

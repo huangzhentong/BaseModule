@@ -19,7 +19,7 @@
     return isRequest;
 }
 
-+(NSURLSessionDataTask*)requestWithDic:(NSDictionary *)userInfo withBlock:(void(^)(id result))block
++(id)requestWithDic:(NSDictionary *)userInfo withBlock:(void(^)(id result))block
 {
     
     //空格及中文处理
@@ -27,6 +27,7 @@
     
     NSDictionary *parameters = userInfo[ClientParameters];
     NSString *type =  [userInfo[ClientType] lowercaseString];
+    
     //是否缓存
     BOOL isCache = false;
     void (^completion)(id result) = block;
@@ -68,6 +69,14 @@
         }
             break;
     }
+    NSUInteger timeOut = [userInfo[ClientTimeOutInterval] intValue];
+    if (timeOut != kTimeOutInterval) {
+        AFHTTPRequestSerializer *serializer = [HHttpRequestManager manager].requestSerializer;
+        [serializer willChangeValueForKey:@"timeoutInterval"];
+        serializer.timeoutInterval = timeOut;
+        [serializer didChangeValueForKey:@"timeoutInterval"];
+    }
+    
     
     
     if ([type isEqualToString:@"post"]) {
@@ -126,7 +135,7 @@
     }
     else if([type isEqualToString:@"download"])
     {
-        [HHttpRequestManager downloadWithUrlSring:url savePath:userInfo[SavePath] progress:uploadProgress completionHandler:^(NSString *filePath, NSError *error) {
+      return  [HHttpRequestManager downloadWithUrlSring:url withData: userInfo[DownCurrentLength]   savePath:userInfo[SavePath] progress:uploadProgress completionHandler:^(NSString *filePath, NSError *error) {
             
             if (error==nil) {
                 [self successEvent:@{@"filePath":filePath,@"code":@(200)}  withCompletion:completion];

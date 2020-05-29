@@ -42,7 +42,7 @@ static NSString * const ClientParameters = @"parameters";
 
 static NSString * const ClientHeaders = @"headers";
 static NSString * const ClientRequestSerializer = @"requestSerializer";
-
+static NSString * const ClientTimeOutInterval = @"timeOutInterval";
 #pragma mark - DownLoadClient
 static NSString * const SavePath = @"savePath";
 //static NSString * const DownloadProgress = @"DownloadProgress";
@@ -54,3 +54,6 @@ static NSString * const UploadFiles = @"file";
 static NSString * const UploadName = @"name";
 static NSString * const UploadFileName = @"fileName";
 static NSString * const UploadMimeType = @"mimeType";
+
+
+static NSString * const DownCurrentLength = @"DownCurrentLength";

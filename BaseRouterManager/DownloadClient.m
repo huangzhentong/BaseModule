@@ -8,10 +8,14 @@
 
 #import "DownloadClient.h"
 #import "BaseRouterManager.h"
-
-
+#include <objc/runtime.h>
+#import "DownloadFileCacheManager.h"
 @interface DownloadClient ()
-
+{
+    NSURLSessionDownloadTask * _downloadTask;
+}
+@property(nonatomic)NSInteger currentLength;
+@property(nonatomic,strong)NSData* tmpData;
 @end
 
 @implementation DownloadClient
@@ -19,19 +23,32 @@
 {
     self = [super init];
     if (self) {
-        
+        _reloadDown = false;
     }
     return self;
 }
+-(NSURLSessionDownloadTask*)downloadTask
+{
+    return _downloadTask;
+}
+-(NSInteger)currentLength
+{
+    return [DownloadFileCacheManager fileSizeWithTmpPathURL:self.url];
+}
+-(NSData*)tmpData
+{
+    return [DownloadFileCacheManager tmpCacheDataWithDownloadURL:self.url];
+}
+
 
 -(NSDictionary*)dictionaryWithModel{
     NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary: [super dictionaryWithModel]];
-    
     dic[SavePath]=self.savePath?:@"";
     dic[ClientType]=@"download";
-    
+    if (self.tmpData) {
+        dic[DownCurrentLength] = self.tmpData;
+    }
     return dic;
-    
 }
 -(void)request:(RequestProgressBlock )progress completion:(void(^)(id result))complete
 {
@@ -41,7 +58,7 @@
 {
     self.progress = progress;
     NSDictionary *dic = [self dictionaryWithModel];
-    [BaseRouterManager requestWithDic:dic withBlock:^(id result) {
+   _downloadTask = [BaseRouterManager requestWithDic:dic withBlock:^(id result) {
      
         if (([result isKindOfClass:[NSError class]])) {
             NSLog(@"error =%@",result);
@@ -80,7 +97,10 @@
             complete(result);
         }
     }];
-     
-    
+    if (self.currentLength == 0) {
+        [DownloadFileCacheManager saveDownLoadTaskData:_downloadTask];
+    }
 }
+
+
 @end

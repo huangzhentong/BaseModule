@@ -14,7 +14,8 @@
 
 @property(nonatomic,copy)NSString *savePath;
 @property(nonatomic,copy)NSString *fileName;
-
+@property(nonatomic,readonly)NSURLSessionDownloadTask * downloadTask;
+@property(nonatomic,getter=isReloadDown)BOOL reloadDown;                                        //重新下载 默认false
 
 
 -(void)request:(RequestProgressBlock )progress completion:(void(^)(id result))complete;

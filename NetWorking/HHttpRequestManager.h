@@ -90,7 +90,8 @@ headers:(nullable NSDictionary <NSString *, NSString *> *)headers
 
 #pragma mark -- 下载 （未完成）
 //下载
-+(void)downloadWithUrlSring:(nullable NSString *)urlString
++(NSURLSessionDownloadTask*)downloadWithUrlSring:(nullable NSString *)urlString
+                                   withData:(NSData*)tmpData
                    savePath:(nullable NSString *)savePath
                    progress:(nullable void (^)(NSProgress * _Nonnull downloadProgress))downloadProgress
           completionHandler:(nullable void (^)(NSString * _Nonnull filePath , NSError * _Nonnull error))completion;

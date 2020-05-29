@@ -43,6 +43,7 @@ static HHttpRequestSerializer generalSerializer = HHttpRequestSerializerJSON;
         self.requestType=HttpRequestUrlType_Post;
         self.generalLogic = true;
         self.serializer = generalSerializer;
+        self.timeOutInterval = 10;
     }
     return self;
 }
@@ -104,6 +105,7 @@ static HHttpRequestSerializer generalSerializer = HHttpRequestSerializerJSON;
     }
     dic[ClientRequestSerializer] = @(self.serializer);
     dic[ClientType] = self.type?:@"post";
+    dic[ClientTimeOutInterval] = @(self.timeOutInterval);
     if (self.progress) {
         dic[ClientProgress] = self.progress;
     }

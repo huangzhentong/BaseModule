@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4692025424810A4300B86C77 /* DownloadFileCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4692025324810A4200B86C77 /* DownloadFileCacheManager.m */; };
 		46B42AFB20FDCA190004D926 /* BaseClient+RAC.m in Sources */ = {isa = PBXBuildFile; fileRef = 46B42AFA20FDCA190004D926 /* BaseClient+RAC.m */; };
 		46B6887820F7227100B7FBFD /* HHttpRequestConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 46B6887520F7227100B7FBFD /* HHttpRequestConfigManager.m */; };
 		46B6887920F7227100B7FBFD /* RequestModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 46B6887620F7227100B7FBFD /* RequestModelManager.m */; };
@@ -59,6 +60,8 @@
 		17C6B9CFB8C251250445F7C3 /* Pods-BasisModule.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BasisModule.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BasisModule/Pods-BasisModule.debug.xcconfig"; sourceTree = "<group>"; };
 		28BCCF98ABC1F4CD35A982EF /* Pods-BasisModule.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BasisModule.release.xcconfig"; path = "Pods/Target Support Files/Pods-BasisModule/Pods-BasisModule.release.xcconfig"; sourceTree = "<group>"; };
 		3BEE32E81FE8E9210011DAE8 /* RouterDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RouterDefine.h; sourceTree = "<group>"; };
+		4692025224810A4200B86C77 /* DownloadFileCacheManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DownloadFileCacheManager.h; sourceTree = "<group>"; };
+		4692025324810A4200B86C77 /* DownloadFileCacheManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DownloadFileCacheManager.m; sourceTree = "<group>"; };
 		46B42AF920FDCA190004D926 /* BaseClient+RAC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BaseClient+RAC.h"; sourceTree = "<group>"; };
 		46B42AFA20FDCA190004D926 /* BaseClient+RAC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "BaseClient+RAC.m"; sourceTree = "<group>"; };
 		46B6887320F7227100B7FBFD /* RequestModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestModelManager.h; sourceTree = "<group>"; };
@@ -160,6 +163,8 @@
 				46B6887520F7227100B7FBFD /* HHttpRequestConfigManager.m */,
 				46B6887320F7227100B7FBFD /* RequestModelManager.h */,
 				46B6887620F7227100B7FBFD /* RequestModelManager.m */,
+				4692025224810A4200B86C77 /* DownloadFileCacheManager.h */,
+				4692025324810A4200B86C77 /* DownloadFileCacheManager.m */,
 			);
 			name = Manager;
 			path = ../../Manager;
@@ -520,6 +525,7 @@
 				636BC2D81EE53C23006BC878 /* AESCbc.m in Sources */,
 				46B42AFB20FDCA190004D926 /* BaseClient+RAC.m in Sources */,
 				46B6888620F7236B00B7FBFD /* BaseRouterManager.m in Sources */,
+				4692025424810A4300B86C77 /* DownloadFileCacheManager.m in Sources */,
 				636BC2DA1EE53C23006BC878 /* JSONKit.m in Sources */,
 				46B6887820F7227100B7FBFD /* HHttpRequestConfigManager.m in Sources */,
 				46B6888020F722A000B7FBFD /* KosHttpRequestConfig.m in Sources */,

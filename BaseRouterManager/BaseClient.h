@@ -46,8 +46,11 @@ typedef void(^RequestProgressBlock)(NSProgress *progress);
 @property(nonatomic,weak)id<RequestModelDelegate> delegate;
 @property(nonatomic)Class modelClass;                             //需要转换的模型
 
+
+
 @property(nonatomic,copy)NSDictionary *headers;                   //请求头
 @property(nonatomic,strong,readonly)NSURLSessionDataTask* dataTask;
+@property(nonatomic)NSUInteger timeOutInterval;                     //超时
 @property(nonatomic,getter=isGeneralLogic)BOOL generalLogic;    //是否使用通用逻辑 默认为true
 
 @property(nonatomic)HHttpRequestSerializer serializer;          //默认为JSON
