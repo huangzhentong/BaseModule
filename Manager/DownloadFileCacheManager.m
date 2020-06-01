@@ -17,12 +17,15 @@ NSString * const DownloadKeyBytesReceived = @"NSURLSessionResumeBytesReceived";
 NSString * const DownloadKeyCurrentRequest = @"NSURLSessionResumeCurrentRequest";
 NSString * const DownloadKeyTempFileName = @"NSURLSessionResumeInfoTempFileName";
 
+NSString * const DownloadFileURLKey = @"downloadCache.plist";
+
 @interface DownloadFileCacheManager ()
 {
     
 }
 @property(nonatomic,strong)NSFileManager *fileManager;
 @property(nonatomic,strong)NSMutableDictionary *cacheDic;
+@property(nonatomic,copy)NSString *downloadFileURL;                     //缓存文件地址
 @end
 
 @implementation DownloadFileCacheManager
@@ -36,11 +39,22 @@ NSString * const DownloadKeyTempFileName = @"NSURLSessionResumeInfoTempFileName"
     });
     return manager;
 }
+-(NSString*)downloadFileURL
+{
+    if (!_downloadFileURL) {
+        NSString *cachePath =  [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject];
+        _downloadFileURL = [cachePath stringByAppendingPathComponent:DownloadFileURLKey];
+    }
+    return _downloadFileURL;
+}
 
 -(NSMutableDictionary*)cacheDic
 {
     if (!_cacheDic) {
-        _cacheDic = [NSMutableDictionary dictionaryWithCapacity:0];
+        _cacheDic =  [NSMutableDictionary dictionaryWithContentsOfFile:self.downloadFileURL];
+        if (_cacheDic == nil) {
+            _cacheDic = [NSMutableDictionary dictionaryWithCapacity:0];
+        }
     }
     return _cacheDic;
 }
@@ -57,7 +71,7 @@ NSString * const DownloadKeyTempFileName = @"NSURLSessionResumeInfoTempFileName"
 {
     return  self.cacheDic[url];
 }
-
+//获取tmp文件名
 +(NSString*)tmpChchePathWithDownloadURL:(NSString*)url
 {
     return [[self shareInstance] tmpChchePathWithDownloadURL:url];
@@ -76,7 +90,7 @@ NSString * const DownloadKeyTempFileName = @"NSURLSessionResumeInfoTempFileName"
 
 -(NSInteger)fileSizeWithPath:(NSString *)path {
     NSInteger fileLength = 0;
-   
+    
     if ([self.fileManager fileExistsAtPath:path]) {
         NSError *error = nil;
         NSDictionary *fileDict = [self.fileManager attributesOfItemAtPath:path error:&error];
@@ -88,6 +102,68 @@ NSString * const DownloadKeyTempFileName = @"NSURLSessionResumeInfoTempFileName"
 }
 
 
+//获取缓存列表
+
+
+-(NSArray<NSString*>*)getTmpCacheList{
+    NSString *path =NSTemporaryDirectory();
+    if([self.fileManager fileExistsAtPath:path])
+    {
+        NSError *error = nil;
+        NSArray *filesList = [self.fileManager contentsOfDirectoryAtPath:path error:&error];
+        NSLog(@"filesList=%@",filesList);
+    }
+    return nil;
+}
+
++(NSArray<NSString*>*)getTmpCacheList
+{
+    return [[self shareInstance] getTmpCacheList];
+}
+//移除临时文件
+-(BOOL)removeTmpCacheWithTmpName:(NSString*)tmpName
+{
+    
+    {
+        NSArray * array = [self getTmpCacheList];
+        if([array containsObject:tmpName])
+        {
+            NSString *path =NSTemporaryDirectory();
+            BOOL success = [self.fileManager removeItemAtPath:[path stringByAppendingPathComponent:tmpName] error:nil];
+            NSLog(@"success=%i",success);
+            return success;
+        }
+    }
+    return false;
+}
+//移除临时文件
++(BOOL)removeTmpCacheWithTmpName:(NSString*)tmpName
+{
+    return  [[self shareInstance] removeTmpCacheWithTmpName:tmpName];
+}
+-(BOOL)removeTmpCacheWithDownLoadURL:(NSString *)url
+{
+    NSString *tmpName = self.cacheDic[url];
+    if (tmpName) {
+        BOOL success = [self removeTmpCacheWithTmpName:tmpName];
+        if (success) {
+            [self.cacheDic removeObjectForKey:url];
+        }
+        return success;
+    }
+    return false;
+}
++(BOOL)removeTmpCacheWithDownLoadURL:(NSString *)url
+{
+    return  [[self shareInstance] removeTmpCacheWithDownLoadURL:url];
+}
+
+//下载完成删除缓存数据
++(void)removeTmpValueWithDownloadURL:(NSString*)url
+{
+    [[[self shareInstance] cacheDic] removeObjectForKey:url];
+}
+
 //获取临时文件数据
 +(NSData*)tmpCacheDataWithDownloadURL:(NSString*)downloadUrl
 {
@@ -98,40 +174,51 @@ NSString * const DownloadKeyTempFileName = @"NSURLSessionResumeInfoTempFileName"
     NSString* tmpPath =  [NSTemporaryDirectory() stringByAppendingPathComponent:tmpName];
     
     NSData *resultData = nil;
-  
+    
     NSData *tempCacheData = [NSData dataWithContentsOfFile:tmpPath];
-        
-        if (tempCacheData && tempCacheData.length > 0) {
-            NSMutableDictionary *resumeDataDict = [NSMutableDictionary dictionaryWithCapacity:0];
-            NSMutableURLRequest *newResumeRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:downloadUrl]];
-            [newResumeRequest addValue:[NSString stringWithFormat:DownloadResumeDataLength,(long)(tempCacheData.length)] forHTTPHeaderField:DownloadHttpFieldRange];
-            NSData *newResumeRequestData = [NSKeyedArchiver archivedDataWithRootObject:newResumeRequest];
-            [resumeDataDict setObject:@(tempCacheData.length) forKey:DownloadKeyBytesReceived];
-            [resumeDataDict setObject:newResumeRequestData forKey:DownloadKeyCurrentRequest];
-            [resumeDataDict setObject:tmpName forKey:DownloadKeyTempFileName];
-            [resumeDataDict setObject:downloadUrl forKey:DownloadKeyDownloadURL];
-            [resumeDataDict setObject:tmpPath forKey:DownloadTempFilePath];
-            resultData = [NSPropertyListSerialization dataWithPropertyList:resumeDataDict format:NSPropertyListBinaryFormat_v1_0 options:NSPropertyListImmutable error:nil];
-        }
-
+    
+    if (tempCacheData && tempCacheData.length > 0) {
+        NSMutableDictionary *resumeDataDict = [NSMutableDictionary dictionaryWithCapacity:0];
+        NSMutableURLRequest *newResumeRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:downloadUrl]];
+        [newResumeRequest addValue:[NSString stringWithFormat:DownloadResumeDataLength,(long)(tempCacheData.length)] forHTTPHeaderField:DownloadHttpFieldRange];
+        NSData *newResumeRequestData = [NSKeyedArchiver archivedDataWithRootObject:newResumeRequest];
+        [resumeDataDict setObject:@(tempCacheData.length) forKey:DownloadKeyBytesReceived];
+        [resumeDataDict setObject:newResumeRequestData forKey:DownloadKeyCurrentRequest];
+        [resumeDataDict setObject:tmpName forKey:DownloadKeyTempFileName];
+        [resumeDataDict setObject:downloadUrl forKey:DownloadKeyDownloadURL];
+        [resumeDataDict setObject:tmpPath forKey:DownloadTempFilePath];
+        resultData = [NSPropertyListSerialization dataWithPropertyList:resumeDataDict format:NSPropertyListBinaryFormat_v1_0 options:NSPropertyListImmutable error:nil];
+    }
+    
     return resultData;
 }
-
-+(void)saveDownLoadTaskData:(NSURLSessionDownloadTask*)downloadTask
+-(void)saveDownLoadTaskData:(NSURLSessionDownloadTask*)downloadTask
 {
     if(downloadTask == nil)
     {
         return;
     }
     else{
-        NSString *tmpPath = [self tempCacheFileNameForTask:downloadTask];
+        NSString *tmpPath = [[self class] tempCacheFileNameForTask:downloadTask];
         
         NSString *downloadURL = [[[downloadTask currentRequest] URL] absoluteString];
         //保存数据
         NSLog(@"tmpPath =%@,downloadURL=%@",tmpPath,downloadURL);
-        [[[self shareInstance] cacheDic] setValue:tmpPath forKey:downloadURL];
-
+        [self.cacheDic setValue:tmpPath forKey:downloadURL];
+        
+        
+        BOOL success = [self.cacheDic writeToFile:self.downloadFileURL atomically:true];
+        if (success) {
+            NSLog(@"写入成功");
+        }
+        
     }
+}
+
+
++(void)saveDownLoadTaskData:(NSURLSessionDownloadTask*)downloadTask
+{
+    [[self shareInstance] saveDownLoadTaskData:downloadTask];
 }
 
 NSString * const DownloadFileProperty = @"downloadFile";

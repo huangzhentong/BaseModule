@@ -14,7 +14,7 @@
 {
     NSURLSessionDownloadTask * _downloadTask;
 }
-@property(nonatomic)NSInteger currentLength;
+//@property(nonatomic)NSInteger currentLength;
 @property(nonatomic,strong)NSData* tmpData;
 @end
 
@@ -23,7 +23,7 @@
 {
     self = [super init];
     if (self) {
-        _reloadDown = false;
+        
     }
     return self;
 }
@@ -31,10 +31,7 @@
 {
     return _downloadTask;
 }
--(NSInteger)currentLength
-{
-    return [DownloadFileCacheManager fileSizeWithTmpPathURL:self.url];
-}
+
 -(NSData*)tmpData
 {
     return [DownloadFileCacheManager tmpCacheDataWithDownloadURL:self.url];
@@ -94,10 +91,11 @@
                     
                 }
             }
+            [DownloadFileCacheManager removeTmpValueWithDownloadURL:dic[ClientUrl]];
             complete(result);
         }
     }];
-    if (self.currentLength == 0) {
+    if (self.tmpData == nil) {
         [DownloadFileCacheManager saveDownLoadTaskData:_downloadTask];
     }
 }

@@ -21,6 +21,7 @@
 #import "BaseClient+RAC.h"
 #import "UploadClient.h"
 #import "BaseRouterManager.h"
+#import "DownloadFileCacheManager.h"
 //#define DEBUG_URL @"http://test.starfans-ubuntu:8000/"
 #define LocationCachePath NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0]
 @interface ViewController ()<UITableViewDataSource>
@@ -79,6 +80,8 @@
         NSLog(@"parameterString2 = %@", url.query);
     }
     
+    
+    
 }
 
 //登陆
@@ -103,6 +106,7 @@
 }
 - (IBAction)pauseDown:(id)sender {
     [downModel.downloadTask suspend];
+    [DownloadFileCacheManager getTmpCacheList];
 }
 - (IBAction)continueDown:(id)sender {
     [downModel.downloadTask resume];
