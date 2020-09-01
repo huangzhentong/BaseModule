@@ -317,6 +317,7 @@ headers:(nullable NSDictionary <NSString *, NSString *> *)headers
 
 +(NSURLSessionDataTask *)uploadImageWithUrlString:(nullable NSString *)urlString
                      parameters:(nullable id)parameters
+                        headers:(NSDictionary *)headerDic
                           files:(nullable NSArray*)files
                         name:(nullable NSArray*)names
                         fileName:(nullable NSArray*)fileNames
@@ -341,7 +342,7 @@ headers:(nullable NSDictionary <NSString *, NSString *> *)headers
                                                                                                      nil] ;
 
     
-    return  [manager POST:urlString parameters:parameters headers:nil constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
+    return  [manager POST:urlString parameters:parameters headers:headerDic constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
       
         
         for (int i = 0; i < files.count; i++)

@@ -158,7 +158,7 @@
         if (![files isKindOfClass:[NSArray class]]) {
             files = @[files];
         }
-        return [HHttpRequestManager uploadImageWithUrlString:url parameters:parameters files:files name:name fileName:fileName mimeType:mimeType progress:uploadProgress success:^(NSDictionary * _Nonnull dict, BOOL success) {
+        return [HHttpRequestManager uploadImageWithUrlString:url parameters:parameters headers: headers files:files name:name fileName:fileName mimeType:mimeType progress:uploadProgress success:^(NSDictionary * _Nonnull dict, BOOL success) {
             [self successEvent:dict  withCompletion:completion];
         } failure:^(NSError * _Nonnull error) {
             [self failureEvent:error withCompletion:completion];

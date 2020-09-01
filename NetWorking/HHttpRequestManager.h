@@ -106,6 +106,7 @@ headers:(nullable NSDictionary <NSString *, NSString *> *)headers
 
 +(NSURLSessionDataTask *)uploadImageWithUrlString:(nullable NSString *)urlString
                                        parameters:(nullable id)parameters
+                                        headers:(NSDictionary*)headerDic
                                             files:(nullable NSArray*)files
                                              name:(nullable NSArray*)names
                                          fileName:(nullable NSArray*)fileNames
