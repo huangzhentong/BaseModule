@@ -84,6 +84,8 @@ typedef void(^RequestProgressBlock)(NSProgress *progress);
  */
 +(void)setBaseURL:(NSString*)url;
 //取消请求
+//设置通用的超时时间
++(void)setClientTimeOutInterval:(NSInteger)timeOut;
 
 //设置通用serializer
 +(void)setGeneralSerializer:(HHttpRequestSerializer)serializer;

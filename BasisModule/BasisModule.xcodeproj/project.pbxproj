@@ -296,13 +296,13 @@
 		63749C9E1DD04CBD003BD586 /* BaseRouterManager */ = {
 			isa = PBXGroup;
 			children = (
-				3BEE32E81FE8E9210011DAE8 /* RouterDefine.h */,
-				46B6888520F7236B00B7FBFD /* BaseRouterManager.h */,
-				46B6888420F7236B00B7FBFD /* BaseRouterManager.m */,
 				63679CD51DE3F9BD00E73155 /* BaseClient.h */,
 				63679CD61DE3F9BD00E73155 /* BaseClient.m */,
+				46B6888520F7236B00B7FBFD /* BaseRouterManager.h */,
+				46B6888420F7236B00B7FBFD /* BaseRouterManager.m */,
 				6324B36A1E0BBB8000556623 /* DownloadClient.h */,
 				6324B36B1E0BBB8000556623 /* DownloadClient.m */,
+				3BEE32E81FE8E9210011DAE8 /* RouterDefine.h */,
 				630A79A11DD44BF900D729F7 /* UploadClient.h */,
 				630A79A21DD44BF900D729F7 /* UploadClient.m */,
 			);

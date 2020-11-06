@@ -24,6 +24,8 @@ static NSString *baseURL=nil;
 
 static HHttpRequestSerializer generalSerializer = HHttpRequestSerializerJSON;
 
+static NSInteger commonTimeOut = 30;
+
 +(void)setBaseURL:(NSString*)url
 {
     baseURL = [url copy];
@@ -32,6 +34,20 @@ static HHttpRequestSerializer generalSerializer = HHttpRequestSerializerJSON;
 +(void)setGeneralSerializer:(HHttpRequestSerializer)serializer
 {
     generalSerializer = serializer;
+}
+//设置通用的超时时间
++(void)setClientTimeOutInterval:(NSInteger)timeOut
+{
+    if (timeOut <= 0) {
+        commonTimeOut = 30;
+    }
+    else if (timeOut > 60)
+    {
+        commonTimeOut = 60;
+    }
+    else {
+        commonTimeOut = timeOut;
+    }
 }
 
 -(instancetype)init
@@ -43,7 +59,7 @@ static HHttpRequestSerializer generalSerializer = HHttpRequestSerializerJSON;
         self.requestType=HttpRequestUrlType_Post;
         self.generalLogic = true;
         self.serializer = generalSerializer;
-        self.timeOutInterval = 10;
+        self.timeOutInterval = commonTimeOut;
     }
     return self;
 }
